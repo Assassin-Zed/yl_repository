@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.test.test.mapper.TestMapper">
+
+    <insert id="insert" parameterType="com.iflytek.test.test.model.Test">
+       INSERT INTO test(no,status)  VALUES (#{no},#{status});
+    </insert>
+<select id="queryAll" resultType="com.iflytek.test.test.model.Test">
+    SELECT  no ,status FROM test;
+</select>
+    <update id="updateStatus" parameterType="java.util.List">
+        update test
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="status =case" suffix="end,">
+                <foreach collection="list" item="cus">
+                    <if test="cus.status!=null">
+                        when no=#{cus.no} then #{cus.status}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="list" separator="or" item="cus">
+                no = #{cus.no}
+            </foreach>
+        </where>
+    </update>
+</mapper>
